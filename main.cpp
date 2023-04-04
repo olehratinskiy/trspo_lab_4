@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     int procCount, procNum;
     MPI_Status status;
     float y;
-    float N = 19;
+    float N = 19 * 100;
     float k = N / 2;
     float h = N / k;
     float a = N;
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
             }
         }
     } else {
-        x = 1 + (float) ((procNum - 1) * stepsPerProcess) * h;
+        x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess) * h;
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
