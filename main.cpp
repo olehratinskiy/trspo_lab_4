@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &procCount);
     MPI_Comm_rank(MPI_COMM_WORLD, &procNum);
 
-    int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount - 1));
+    int stepsPerProcess = (int) round(((float) ((N + 1) / h) / ((float) procCount - 1)));
     Res result[stepsPerProcess];
     Res currentResult[stepsPerProcess];
 
