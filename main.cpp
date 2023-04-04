@@ -2,6 +2,9 @@
 #include <mpi.h>
 #include <vector>
 #include <cmath>
+#include <omp.h>
+#include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -35,6 +38,8 @@ int main(int argc, char* argv[]) {
     Res currentResult[stepsPerProcess];
 
     if (procNum == 0) {
+        double t1, t2;
+        t1 = omp_get_wtime();
         for (int i = 1; i < procCount; i++) {
             float data[2];
             for (int j = 0; j < stepsPerProcess; j++) {
@@ -42,6 +47,9 @@ int main(int argc, char* argv[]) {
                 cout << "Process №" << i << " f(" << data[0] << ") = " << data[1] << endl;
             }
         }
+        t2 = omp_get_wtime();
+        cout << endl << "Time (seconds): " << setprecision(50) << t2 - t1 << endl;
+
     } else {
         x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess) * h;
         for (int i = 0; i < stepsPerProcess; i++) {
