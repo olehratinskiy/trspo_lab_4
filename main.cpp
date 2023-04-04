@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
         for (int i = 1; i < procCount; i++) {
             MPI_Recv(currentResult, stepsPerProcess, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 
-            for (int j = 0; j < stepsPerProcess; j++)
-                cout << "Process №" << currentResult[j].num << " f(" << currentResult[j].x << ") = " << currentResult[j].y << endl;
+//            for (int j = 0; j < stepsPerProcess; j++)
+//                cout << "Process №" << currentResult[j].num << " f(" << currentResult[j].x << ") = " << currentResult[j].y << endl;
         }
     } else {
         x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess);
@@ -53,7 +53,10 @@ int main(int argc, char* argv[]) {
             r.x = x;
             r.y = y;
             result[i] = r;
+
         }
+        for (int j = 0; j < stepsPerProcess; j++)
+            cout << "Process №" << result[j].num << " f(" << result[j].x << ") = " << result[j].y << endl;
         MPI_Send(result, stepsPerProcess, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
     }
 
