@@ -10,7 +10,6 @@ float f(float x) {
 }
 
 struct Res {
-    float num;
     float x;
     float y;
 };
@@ -37,7 +36,6 @@ int main(int argc, char* argv[]) {
 
     if (procNum == 0) {
         for (int i = 1; i < procCount; i++) {
-//            MPI_Recv(currentResult, stepsPerProcess, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             float data[2];
             for (int j = 0; j < stepsPerProcess; j++) {
                 MPI_Recv(data, 2, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
@@ -49,16 +47,13 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
-            cout << x << "  " << y << endl;
             Res r{};
-            r.num = (float) procNum;
             r.x = x;
             r.y = y;
             result[i] = r;
-
         }
+
         for (int j = 0; j < stepsPerProcess; j++) {
-            cout << "Process №" << result[j].num << " f(" << result[j].x << ") = " << result[j].y << endl;
             float data[2];
             data[0] = result[j].x;
             data[1] = result[j].y;
