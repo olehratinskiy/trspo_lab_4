@@ -38,11 +38,11 @@ int main(int argc, char* argv[]) {
     if (procNum == 0) {
         for (int i = 1; i < procCount; i++) {
 //            MPI_Recv(currentResult, stepsPerProcess, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-
-           for (int j = 0; j < stepsPerProcess; j++) {
-               MPI_Recv({x, y}, 2, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-               cout << "Process №" << i << " f(" << x << ") = " << y << endl;
-           }
+            float data[2];
+            for (int j = 0; j < stepsPerProcess; j++) {
+                MPI_Recv(data, 2, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                cout << "Process №" << i << " f(" << data[0] << ") = " << data[1] << endl;
+            }
         }
     } else {
         x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess);
@@ -59,7 +59,10 @@ int main(int argc, char* argv[]) {
         }
         for (int j = 0; j < stepsPerProcess; j++) {
             cout << "Process №" << result[j].num << " f(" << result[j].x << ") = " << result[j].y << endl;
-            MPI_Send({result[j].x, result[j].y}, 2, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
+            float data[2];
+            data[0] = result[j].x;
+            data[1] = result[j].y;
+            MPI_Send(data, 2, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
         }
 
     }
