@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &procCount);
     MPI_Comm_rank(MPI_COMM_WORLD, &procNum);
 
-    int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount));
+    int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount - 1));
     Res result[stepsPerProcess];
     Res currentResult[stepsPerProcess];
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
             }
         }
     } else {
-        x = 1 + (float) ((procNum - 1) * stepsPerProcess) * h;
+        x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess) * h;
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
