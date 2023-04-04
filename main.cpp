@@ -30,42 +30,30 @@ int main(int argc, char* argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &procCount);
     MPI_Comm_rank(MPI_COMM_WORLD, &procNum);
 
-    int count = (int) ((N + 1) / h);
-    Res result[count];
-    Res currentResult[count];
+    int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount));
+    Res result[stepsPerProcess];
+    Res currentResult[stepsPerProcess];
 
     if (procNum == 0) {
         for (int i = 1; i < procCount; i++) {
-            MPI_Recv(currentResult, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-            cout << "Process №" << currentResult[j][0] << " f(" << currentResult[j][1] << ") = " << currentResult[j][2] << endl;
+            MPI_Recv(currentResult, stepsPerProcess, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+
+            for (int j = 0; j < stepsPerProcess; j++)
+                cout << "Process №" << currentResult[j].num << " f(" << currentResult[j].x << ") = " << currentResult[j].y << endl;
         }
     } else {
         if (procNum == 1) x = 1 - h;
 
-        for (int i = 0; i < (int) round(((float) count / (float) procCount)); i++) {
+        for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
             Res r{};
             r.num = (float) procNum;
             r.x = x;
             r.y = y;
-            result[((procNum - 1) * count) + i] = r;
+            result[i] = r;
         }
-
-//        if (procNum == procCount - 1) {
-//            while (x + h <= N + 1) {
-//                x += h;
-//                y = f(x);
-//                tmpResult.push_back((float) procNum);
-//                tmpResult.push_back(x);
-//                tmpResult.push_back(y);
-//                result.push_back(tmpResult);
-//                tmpResult.clear();
-//            }
-//        }
-
-        MPI_Send(result, 3, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
-
+        MPI_Send(result, stepsPerProcess, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
     }
 
     MPI_Finalize();
