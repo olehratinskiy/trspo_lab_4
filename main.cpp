@@ -32,7 +32,6 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &procNum);
 
     int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount));
-    cout << stepsPerProcess << endl;
     Res result[stepsPerProcess];
     Res currentResult[stepsPerProcess];
 
@@ -47,6 +46,7 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
+            cout << x << "  " << y << endl;
             Res r{};
             r.num = (float) procNum;
             r.x = x;
