@@ -18,19 +18,21 @@ struct Res {
 int main(int argc, char* argv[]) {
     int procCount, procNum;
     MPI_Status status;
-    float y, x;
+    float y;
     float N = 19;
     float k = N / 2;
     float h = N / k;
     float a = N;
     float b = N * 2;
     float z = pow(N, 2);
+    float x = 1 - h;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &procCount);
     MPI_Comm_rank(MPI_COMM_WORLD, &procNum);
 
     int stepsPerProcess = (int) round(((float) ((N + 1) / h) / (float) procCount));
+    cout << stepsPerProcess << endl;
     Res result[stepsPerProcess];
     Res currentResult[stepsPerProcess];
 
@@ -42,8 +44,6 @@ int main(int argc, char* argv[]) {
                 cout << "Process №" << currentResult[j].num << " f(" << currentResult[j].x << ") = " << currentResult[j].y << endl;
         }
     } else {
-        if (procNum == 1) x = 1 - h;
-
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
