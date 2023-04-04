@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     float a = N;
     float b = N * 2;
     float z = pow(N, 2);
-    float x = 1 - h;
+    float x;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &procCount);
@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
                 cout << "Process №" << currentResult[j].num << " f(" << currentResult[j].x << ") = " << currentResult[j].y << endl;
         }
     } else {
+        x = (1 - h) + (float) ((procNum - 1) * stepsPerProcess);
         for (int i = 0; i < stepsPerProcess; i++) {
             x += h;
             y = f(x);
